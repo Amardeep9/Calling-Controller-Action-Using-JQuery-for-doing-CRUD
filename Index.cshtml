@@ -1,0 +1,120 @@
+﻿@model IEnumerable<CrudUsingJqueryUsingADO.Models.Employee>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@*<p>
+    @Html.ActionLink("Create New", "Create")
+</p>*@
+@*<p>
+    @Html.ActionLink("Create New", "Create", "Employee", new { onclick = "CreateEmployee();" }) 
+</p>*@
+
+<div style="padding:7px 0;">
+        <input type="button" value="Add New Employee" onclick="CreateEmployee()" />
+    </div>
+
+<div id='OpenDilog'></div>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Gender)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Department)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.City)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gender)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+
+                @Html.Raw("<img src='/images/edit image.png' title='Edit' onclick='EditEmployee(" + item.ID + ")' />")|
+                @Html.Raw("<img src='/images/details.png' title='Details' onclick='DetailsEmployee(" + item.ID + ")' />")|
+                @Html.Raw("<img src='/images/delete.png' title='Delete' onclick='DeleteEmployee(" + item.ID + ")' />")
+                @*@Html.ActionLink("Edit", "Edit", new { id = item.ID }) |
+        @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+        @Html.ActionLink("Delete", "Delete", new { id = item.ID })*@
+            </td>
+        </tr>
+    }
+
+</table>
+
+
+
+
+<script type="text/javascript">
+    function CreateEmployee() {
+        var div = $("#OpenDilog");
+        div.load("/Employee/Create", function () {
+            div.dialog({
+                modal: true,
+                width: 500,
+                height: 400,
+                title: "Add New Employee",
+                resizable: false
+            });
+        });
+    }
+    function EditEmployee(E_ID) {
+        var ph = $("#OpenDilog");
+        ph.load("/Employee/Edit?ID=" + E_ID, function () {
+            ph.dialog({
+                modal: true,
+                width: 500,
+                height: 400,
+                title: "Edit Employee",
+                resizable: false
+            });
+        });
+    }
+
+    function DetailsEmployee(E_ID) {
+        var ph = $("#OpenDilog");
+        ph.load("/Employee/Details?ID=" + E_ID, function () {
+            ph.dialog({
+                modal: true,
+                width: 500,
+                height: 400,
+                title: "Details of  Employee",
+                resizable: false
+            });
+        });
+    }
+    function DeleteEmployee(E_ID) {
+        if (confirm("Are You Sure Delete Selected Employee Record No.? " + E_ID)) {
+            var data = {'ID':E_ID }
+            $.post('/Employee/Delete', data,
+                function (data) {
+                    if (data == true)
+                        location = location.href;
+                    else
+                        alert("Not delete something Wrong");
+                });
+        }
+    }
+</script>
